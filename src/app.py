@@ -53,13 +53,29 @@ def handle_hello():
     members = jackson_family.get_all_members()
     return jsonify(members), 200
 
-@app.route('/members', methods=['POST'])
+@app.route('/member', methods=['POST'])
 def add_member():
     body = request.get_json()
     if body is None:
-        return jsonify({"msg:" "Bad request"}), 400
+        return jsonify({"msg": "Bad request"}), 400
     jackson_family.add_member(body)
-    return jsonify({"msg:" "Member added succesfully"}), 200
+    return jsonify({"msg": "Member added succesfully"}), 200
+
+@app.route('/member/<int:id>', methods=['GET'])
+def get_member(id):
+    member = jackson_family.get_member(id)
+    if member:
+        return jsonify(member), 200
+    else:
+        return jsonify({"msg": "Member not found"}), 400
+    
+@app.route('/member/<int:id>', methods=['DELETE'])
+def delete_member(id):
+    member = jackson_family.delete_member(id)
+    if member:
+        return jsonify({"done": True}), 200
+    else:
+        return jsonify({"msg": "Member not found"}), 404
     
 
 # this only runs if `$ python src/app.py` is executed
